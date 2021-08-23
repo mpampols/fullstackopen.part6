@@ -23,7 +23,7 @@ const anecdoteReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'VOTE':
       const newAnecdotes = []
-      const selectedState = state.find(anecdote => anecdote.id === action.id)
+      const selectedState = state.find(anecdote => anecdote.id === action.data)
       state.forEach(anecdote => {
         if (anecdote.id === selectedState.id) {
           newAnecdotes.push({
