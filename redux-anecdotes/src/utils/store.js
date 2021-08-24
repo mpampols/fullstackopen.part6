@@ -1,9 +1,11 @@
 import { createStore, combineReducers } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
-import anecdoteReducer from '../reducers/anecdoteReducer'
+import anecdoteReducer, { createAnecdote } from '../reducers/anecdoteReducer'
 import filterReducer from '../reducers/filterReduce'
 import notificationReducer from '../reducers/notificationReducer'
+
+import anecdoteService from '../services/anecdotes'
 
 const combineReducer = combineReducers({
   anecdotes: anecdoteReducer,
@@ -13,6 +15,14 @@ const combineReducer = combineReducers({
 
 const store = createStore(combineReducer, composeWithDevTools())
 
-console.log(store.getState())
+// Retrieve anecdotes from server and dispatch a create for each one
+anecdoteService.getAll().then(anecdotes => {
+  anecdotes.forEach(anecdote => {
+    store.dispatch(
+      createAnecdote(anecdote.content)
+    )
+  })
+}
+)
 
 export default store
