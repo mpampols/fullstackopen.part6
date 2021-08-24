@@ -1,9 +1,26 @@
-const notificationReducer = (state = null, action) => {
+const initialState = {
+  message: '',
+  timeoutId: null,
+};
+
+const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SHOW_NOTIFICATION":
-      return action.message
+      return {
+        message: action.message,
+        tid: action.tid
+      }
+    case "CLEAR_NOTIFICATION":
+      return {
+        message: '',
+        tid: null
+      }
     case "HIDE_NOTIFICATION":
-      return null
+      clearTimeout(state.tid)
+      return {
+        message: action.message,
+        tid: action.tid
+      }
     default:
       break;
   }
@@ -11,21 +28,20 @@ const notificationReducer = (state = null, action) => {
 }
 
 export const showNotification = (message, duration) => async (dispatch) => {
-  dispatch({
-    type: "SHOW_NOTIFICATION",
-    message
-  })
-  setTimeout(() => {
+  const timeoutId = setTimeout(() => {
     dispatch({
-      type: "HIDE_NOTIFICATION"
+      type: "CLEAR_NOTIFICATION"
     })
   }, duration * 1000);
-}
-
-export const hideNotification = (content) => {
-  return {
+  dispatch({
     type: "HIDE_NOTIFICATION"
-  }
+  })
+
+  dispatch({
+    type: "SHOW_NOTIFICATION",
+    message,
+    tid: timeoutId
+  })
 }
 
 export default notificationReducer
